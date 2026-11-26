@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#090b13">
+<title>AI VIDEO STUDIO PRO — Rengga Studio Production</title>
+<style>
+:root{--bg:#090b13;--panel:#111522;--panel2:#171d2d;--line:#283149;--text:#f4f6ff;--muted:#9aa5bd;--purple:#8b5cf6;--blue:#4f8cff;--green:#31c48d;--red:#e11d48}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(circle at 80% -10%,#25204a 0,transparent 32%),var(--bg);color:var(--text);font:14px/1.5 Inter,system-ui,Arial,sans-serif}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+.app{min-height:100vh;display:grid;grid-template-columns:250px 1fr}
+.sidebar{background:#0d111c;border-right:1px solid var(--line);padding:22px 14px;position:sticky;top:0;height:100vh;overflow:auto}
+.brand{display:flex;align-items:center;gap:11px;padding:4px 8px 22px}
+.logo{width:42px;height:42px;border-radius:11px;background:#05060a;border:1px solid #2b3248;display:grid;place-items:center;overflow:hidden;flex-shrink:0;box-shadow:0 4px 14px rgba(0,0,0,.5)}
+.brand b{letter-spacing:.4px;font-size:13.5px;display:block;line-height:1.2}
+.brand small{display:block;color:#e11d48;font-size:9px;font-weight:800;letter-spacing:1.1px;margin-top:2px;text-transform:uppercase}
+.nav-label{color:#68748e;font-size:10px;font-weight:800;letter-spacing:1.5px;padding:15px 12px 7px}
+.nav{display:flex;align-items:center;gap:12px;width:100%;border:0;background:transparent;color:#aeb8cc;padding:11px 12px;border-radius:10px;text-align:left;margin:2px 0;transition:all .15s}
+.nav .ico{width:20px;text-align:center;font-size:16px}
+.nav:hover,.nav.active{background:linear-gradient(90deg,#30245b,#1b2440);color:white}
+.side-bottom{margin-top:25px;padding:14px;border:1px solid var(--line);border-radius:13px;background:#121827}
+.side-bottom p{color:var(--muted);font-size:12px;margin:6px 0 12px}
+.main{min-width:0}
+.topbar{height:70px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 30px;background:#0b0e18cc;position:sticky;top:0;z-index:5;backdrop-filter:blur(12px)}
+.crumb{color:var(--muted)}
+.top-actions{display:flex;align-items:center;gap:10px}
+.pill{border:1px solid var(--line);padding:7px 11px;border-radius:30px;color:var(--muted);font-size:12px}
+.pill.online{border-color:#265c49;color:#6ee7b7;background:#102922}
+.avatar{width:36px;height:36px;border-radius:50%;background:#05060a;border:1px solid #353f5b;display:grid;place-items:center;overflow:hidden;flex-shrink:0;box-shadow:0 2px 10px rgba(0,0,0,.4)}
+.content{padding:30px;max-width:1450px;margin:auto}
+.page{display:none}
+.page.active{display:block}
+.eyebrow{color:#a78bfa;text-transform:uppercase;letter-spacing:1.8px;font-size:10px;font-weight:800}
+.heading{font-size:28px;margin:5px 0 7px;letter-spacing:-.7px}
+.sub{color:var(--muted);margin:0 0 24px}
+.hero{border:1px solid #39305d;border-radius:18px;padding:26px;background:linear-gradient(110deg,#211a42,#151d35 65%,#14233c);display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:22px}
+.hero h2{font-size:23px;margin:5px 0}
+.hero p{color:#c0c5d8;max-width:560px;margin:0}
+.hero-art{font-size:55px;filter:drop-shadow(0 8px 22px #7c3aed55)}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.card{background:linear-gradient(145deg,#151b2a,#111522);border:1px solid var(--line);border-radius:15px;padding:17px;min-width:0}
+.stat{display:flex;justify-content:space-between;align-items:center}
+.stat .symbol{width:37px;height:37px;border-radius:11px;background:#29234a;display:grid;place-items:center;font-size:18px}
+.stat strong{font-size:25px;display:block;margin-top:12px}
+.muted{color:var(--muted)}
+.section-title{font-size:16px;margin:25px 0 13px}
+.quick{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}
+.quick button{border:1px solid var(--line);border-radius:13px;background:#141a29;color:white;text-align:left;padding:17px;transition:all .15s}
+.quick button:hover{border-color:var(--purple);transform:translateY(-1px)}
+.quick b{display:block;margin:8px 0 3px}
+.quick span{font-size:12px;color:var(--muted)}
+.two{display:grid;grid-template-columns:1.1fr .9fr;gap:17px}
+.field{margin:14px 0}
+.field label{display:block;color:#cbd3e4;font-size:12px;font-weight:700;margin-bottom:7px}
+.field input,.field textarea,.field select{width:100%;background:#0c1120;border:1px solid #303a53;color:white;border-radius:10px;padding:11px 12px;outline:none}
+.field textarea{min-height:90px;resize:vertical}
+.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--purple)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.btn{border:0;border-radius:10px;padding:11px 16px;color:white;font-weight:700;background:linear-gradient(110deg,var(--purple),var(--blue))}
+.btn.secondary{background:#20283a;border:1px solid var(--line);color:#e8ecf8}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:#cbd3e4;padding:7px 11px;font-size:12px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}
+.output{white-space:pre-wrap;min-height:170px;background:#090e19;border:1px solid #303a53;border-radius:11px;padding:14px;color:#dce3f5;font-size:13px;overflow-x:auto}
+.tag{display:inline-block;border:1px solid #45406b;background:#211d3d;color:#c4b5fd;border-radius:30px;padding:4px 9px;font-size:11px;margin:3px}
+.notice{border:1px solid #66502c;background:#2a2115;color:#f5d89b;padding:12px;border-radius:11px;font-size:12px;margin:14px 0}
+.list{display:grid;gap:9px}
+.item{display:flex;justify-content:space-between;align-items:center;gap:10px;background:#0d1321;border:1px solid var(--line);padding:12px;border-radius:10px}
+.item small{display:block;color:var(--muted)}
+.empty{border:1px dashed #39435c;border-radius:13px;padding:25px;text-align:center;color:var(--muted)}
+.mobile-menu{display:none;background:none;color:white;border:0;font-size:22px}
+.status{color:#f5d89b}
+.status.connected{color:#31c48d;font-weight:700}
+.footer-note{font-size:11px;color:#75819a;margin-top:20px}
+.char-thumb{width:46px;height:46px;border-radius:10px;object-fit:cover;border:1px solid #45406b;background:#171d2d;flex-shrink:0}
+.asset-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-top:12px}
+.asset-card{background:#0d1321;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.asset-card img{width:100%;height:130px;object-fit:cover;display:block;background:#090e19}
+.asset-card .meta{padding:10px}
+.timeline-wrap{background:#090e19;border:1px solid #303a53;border-radius:12px;padding:14px;margin-top:14px}
+.preview-box{aspect-ratio:16/9;max-height:280px;margin:0 auto 14px;background:linear-gradient(135deg,#0f1626,#1a1536);border:1px solid var(--line);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:18px;text-align:center;position:relative}
+.track{display:grid;grid-template-columns:110px 1fr;gap:10px;align-items:center;margin:8px 0}
+.track-label{font-size:11px;font-weight:700;color:#9aa5bd;background:#111522;padding:10px;border-radius:8px;border:1px solid var(--line)}
+.track-lane{display:flex;gap:6px;min-height:42px;background:#0d1321;border:1px solid var(--line);border-radius:8px;padding:5px;overflow-x:auto}
+.clip{background:linear-gradient(90deg,#3b2d71,#243866);border:1px solid #6d5cae;border-radius:6px;padding:6px 10px;font-size:11px;white-space:nowrap;display:flex;align-items:center;gap:6px}
+.clip.audio{background:linear-gradient(90deg,#164e3f,#193b4d);border-color:#2c8c72}
+@media(max-width:950px){.grid{grid-template-columns:repeat(2,1fr)}.app{grid-template-columns:215px 1fr}.quick{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:700px){.app{display:block}.sidebar{position:fixed;z-index:20;left:-270px;top:0;width:250px;transition:left .25s;box-shadow:15px 0 40px #0008}.sidebar.open{left:0}.topbar{height:60px;padding:0 15px}.mobile-menu{display:block}.content{padding:20px 14px}.heading{font-size:24px}.hero{padding:19px}.hero-art{font-size:38px}.grid{grid-template-columns:repeat(2,1fr);gap:9px}.card{padding:13px}.two{grid-template-columns:1fr}.quick{grid-template-columns:1fr 1fr}.top-actions .pill{display:none}.row{grid-template-columns:1fr}.hero h2{font-size:19px}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+ <div class="brand">
+  <div class="logo" title="RENGGA STUDIO">
+   <svg viewBox="0 0 120 120" width="38" height="38" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+     <linearGradient id="metalGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="45%" stop-color="#cbd5e1"/>
+      <stop offset="75%" stop-color="#94a3b8"/>
+      <stop offset="100%" stop-color="#f8fafc"/>
+     </linearGradient>
+     <linearGradient id="redGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#b91c1c"/>
+      <stop offset="55%" stop-color="#ef4444"/>
+      <stop offset="100%" stop-color="#ff2a2a"/>
+     </linearGradient>
+     <radialGradient id="flareGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="1"/>
+      <stop offset="35%" stop-color="#ff4d4d" stop-opacity="0.85"/>
+      <stop offset="100%" stop-color="#ff0000" stop-opacity="0"/>
+     </radialGradient>
+    </defs>
+    <rect width="120" height="120" rx="18" fill="#05060a"/>
+    <path d="M35 38 L72 38 C76 38 78 41 75 45 L69 51 L48 51 L37 78 L21 78 Z" fill="url(#redGrad)"/>
+    <path d="M30 22 L77 22 C90 22 97 30 96 41 C95 49 88 55 78 58 L95 78 L75 78 L58 58 L71 54 C81 51 84 46 84 40 C84 34 79 31 71 31 L37 31 Z" fill="url(#metalGrad)"/>
+    <path d="M29 61 L35 38 L39 38 L33 59 Z" fill="#f1f5f9"/>
+    <path d="M14 73 C36 53 74 47 96 36 C105 31 106 23 93 18 C108 19 114 29 106 39 C95 51 54 55 14 73 Z" fill="url(#redGrad)"/>
+    <path d="M24 66 C46 53 74 47 93 38 C76 48 48 55 24 66 Z" fill="#ffffff" opacity="0.85"/>
+    <circle cx="104" cy="24" r="10" fill="url(#flareGrad)"/>
+    <line x1="90" y1="24" x2="118" y2="24" stroke="#ff6b6b" stroke-width="1.2" opacity="0.9"/>
+    <line x1="104" y1="12" x2="104" y2="36" stroke="#ff6b6b" stroke-width="1.2" opacity="0.9"/>
+    <text x="60" y="96" text-anchor="middle" fill="url(#metalGrad)" font-family="Arial Black, Impact, sans-serif" font-weight="900" font-size="16.5" letter-spacing="1.5">RENGGA</text>
+    <line x1="14" y1="106" x2="34" y2="106" stroke="#ef4444" stroke-width="2"/>
+    <text x="60" y="109" text-anchor="middle" fill="#ef4444" font-family="Arial, sans-serif" font-weight="900" font-size="9.5" letter-spacing="3.2">STUDIO</text>
+    <line x1="86" y1="106" x2="106" y2="106" stroke="#ef4444" stroke-width="2"/>
+   </svg>
+  </div>
+  <div>
+   <b>RENGGA STUDIO</b>
+   <small>Rengga studio production</small>
+  </div>
+ </div>
+ <div class="nav-label">WORKSPACE</div>
+ <button class="nav active" data-page="dashboard"><span class="ico">▦</span>Dashboard</button>
+ <button class="nav" data-page="prompt"><span class="ico">✧</span>AI Prompt Generator</button>
+ <button class="nav" data-page="character"><span class="ico">♙</span>Character Studio</button>
+ <button class="nav" data-page="voice"><span class="ico">♫</span>AI Voice Studio</button>
+ <button class="nav" data-page="image"><span class="ico">▧</span>AI Image Studio</button>
+ <button class="nav" data-page="video"><span class="ico">▶</span>AI Video Studio</button>
+ <button class="nav" data-page="storyboard"><span class="ico">▤</span>Storyboard Studio</button>
+ <button class="nav" data-page="editor"><span class="ico">✂</span>Video Editor</button>
+ <button class="nav" data-page="audio"><span class="ico">♫</span>Music & Sound FX</button>
+ <div class="nav-label">LIBRARY & SETTINGS</div>
+ <button class="nav" data-page="projects"><span class="ico">▣</span>My Projects</button>
+ <button class="nav" data-page="assets"><span class="ico">▧</span>Asset Library</button>
+ <button class="nav" data-page="settings"><span class="ico">⚙</span>API Settings</button>
+ <div class="side-bottom"><b>Studio workspace</b><p>Bangun ide menjadi produksi video AI.</p><span class="tag">Full-Stack v2.0</span></div>
+</aside>
+
+<main class="main">
+<header class="topbar">
+ <div style="display:flex;align-items:center;gap:12px">
+  <button class="mobile-menu" id="menuBtn">☰</button>
+  <span class="crumb">Workspace / <b id="crumb">Dashboard</b></span>
+ </div>
+ <div class="top-actions">
+  <span class="pill" id="workspacePill">● Local workspace</span>
+  <div class="avatar" title="RENGGA STUDIO">
+   <svg viewBox="0 0 120 120" width="32" height="32" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+     <linearGradient id="metalGradTop" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="45%" stop-color="#cbd5e1"/>
+      <stop offset="75%" stop-color="#94a3b8"/>
+      <stop offset="100%" stop-color="#f8fafc"/>
+     </linearGradient>
+     <linearGradient id="redGradTop" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#b91c1c"/>
+      <stop offset="55%" stop-color="#ef4444"/>
+      <stop offset="100%" stop-color="#ff2a2a"/>
+     </linearGradient>
+     <radialGradient id="flareGradTop" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="1"/>
+      <stop offset="35%" stop-color="#ff4d4d" stop-opacity="0.85"/>
+      <stop offset="100%" stop-color="#ff0000" stop-opacity="0"/>
+     </radialGradient>
+    </defs>
+    <rect width="120" height="120" rx="60" fill="#05060a"/>
+    <path d="M35 38 L72 38 C76 38 78 41 75 45 L69 51 L48 51 L37 78 L21 78 Z" fill="url(#redGradTop)"/>
+    <path d="M30 22 L77 22 C90 22 97 30 96 41 C95 49 88 55 78 58 L95 78 L75 78 L58 58 L71 54 C81 51 84 46 84 40 C84 34 79 31 71 31 L37 31 Z" fill="url(#metalGradTop)"/>
+    <path d="M29 61 L35 38 L39 38 L33 59 Z" fill="#f1f5f9"/>
+    <path d="M14 73 C36 53 74 47 96 36 C105 31 106 23 93 18 C108 19 114 29 106 39 C95 51 54 55 14 73 Z" fill="url(#redGradTop)"/>
+    <path d="M24 66 C46 53 74 47 93 38 C76 48 48 55 24 66 Z" fill="#ffffff" opacity="0.85"/>
+    <circle cx="104" cy="24" r="10" fill="url(#flareGradTop)"/>
+    <text x="60" y="96" text-anchor="middle" fill="url(#metalGradTop)" font-family="Arial Black, Impact, sans-serif" font-weight="900" font-size="16.5" letter-spacing="1.5">RENGGA</text>
+    <text x="60" y="109" text-anchor="middle" fill="#ef4444" font-family="Arial, sans-serif" font-weight="900" font-size="9.5" letter-spacing="3.2">STUDIO</text>
+   </svg>
+  </div>
+ </div>
+</header>
+
+<div class="content">
+<!-- 1. DASHBOARD -->
+<section class="page active" id="dashboard">
+ <div class="hero">
+  <div>
+   <div class="eyebrow">RENGGA STUDIO PRODUCTION</div>
+   <h2>Wujudkan ide menjadi karya sinematik.</h2>
+   <p>Rancang prompt, karakter, suara, storyboard, dan alur produksi video AI dalam satu studio terintegrasi.</p>
+   <div class="actions">
+    <button class="btn" onclick="showPage('prompt')">✧ Buat Prompt</button>
+    <button class="btn secondary" onclick="showPage('projects')">Lihat Proyek</button>
+   </div>
+  </div>
+  <div class="hero-art">🎬</div>
+ </div>
+ <div class="grid">
+  <div class="card"><div class="stat"><span class="muted">Total proyek</span><span class="symbol">▣</span></div><strong id="projectCount">0</strong><small class="muted">Tersimpan di perangkat ini</small></div>
+  <div class="card"><div class="stat"><span class="muted">Karakter</span><span class="symbol">♙</span></div><strong id="characterCount">0</strong><small class="muted">Profil & referensi karakter</small></div>
+  <div class="card"><div class="stat"><span class="muted">Prompt dibuat</span><span class="symbol">✧</span></div><strong id="promptCount">0</strong><small class="muted">Riwayat lokal</small></div>
+  <div class="card"><div class="stat"><span class="muted">Koneksi AI</span><span class="symbol">⌁</span></div><strong id="dashAiStatus" style="font-size:17px;color:#f5d89b">Mode Lokal</strong><small class="muted" id="dashAiSub">Atur backend di API Settings</small></div>
+ </div>
+ <h3 class="section-title">Quick access</h3>
+ <div class="quick">
+  <button onclick="showPage('prompt')">✧ <b>Prompt Generator</b><span>Buat prompt video detail</span></button>
+  <button onclick="showPage('character')">♙ <b>Character Studio</b><span>Simpan profil & foto referensi</span></button>
+  <button onclick="showPage('voice')">♫ <b>Voice Studio</b><span>Siapkan naskah suara</span></button>
+  <button onclick="showPage('video')">▶ <b>Video Studio</b><span>Siapkan brief video AI</span></button>
+  <button onclick="showPage('storyboard')">▤ <b>Storyboard</b><span>Susun adegan cerita</span></button>
+  <button onclick="showPage('settings')">⚙ <b>API Settings</b><span>Konfigurasi layanan AI</span></button>
+ </div>
+ <h3 class="section-title">Aktivitas terbaru</h3>
+ <div id="recent" class="empty">Belum ada aktivitas. Mulai dengan membuat prompt pertama Anda.</div>
+</section>
+
+<!-- 2. AI PROMPT GENERATOR -->
+<section class="page" id="prompt">
+ <div class="eyebrow">CREATIVE INTELLIGENCE</div>
+ <h1 class="heading">AI Prompt Generator</h1>
+ <p class="sub">Susun brief menjadi prompt video sinematik yang terarah dengan penguncian profil karakter.</p>
+ <div class="two">
+  <div class="card">
+   <div class="field"><label>Ide / deskripsi adegan</label><textarea id="pIdea" placeholder="Contoh: Seorang pendekar berjalan di hutan berkabut saat matahari terbit..."></textarea></div>
+   <div class="field"><label>Character Lock (Pilih karakter tersimpan)</label><select id="pCharSelect"><option value="">-- Tanpa karakter tersimpan --</option></select></div>
+   <div class="row">
+    <div class="field"><label>Gaya visual</label><select id="pStyle"><option>Cinematic realistic</option><option>Photorealistic</option><option>Documentary</option><option>Commercial advertisement</option><option>Anime</option><option>3D animation</option><option>Fantasy</option></select></div>
+    <div class="field"><label>Rasio video</label><select id="pRatio"><option>16:9</option><option>9:16</option><option>1:1</option><option>4:5</option><option>2.39:1</option></select></div>
+   </div>
+   <div class="row">
+    <div class="field"><label>Gerakan kamera</label><select id="pCamera"><option>Slow cinematic dolly-in</option><option>Tracking shot</option><option>Wide establishing shot</option><option>Handheld documentary</option><option>Orbit camera</option><option>Crane / aerial shot</option><option>Static locked camera</option></select></div>
+    <div class="field"><label>Pencahayaan</label><select id="pLight"><option>Soft cinematic natural light</option><option>Golden hour</option><option>Dramatic chiaroscuro</option><option>Studio lighting</option><option>Neon lighting</option><option>Moonlight</option></select></div>
+   </div>
+   <div class="row">
+    <div class="field"><label>Durasi target</label><select id="pDuration"><option>5 seconds</option><option>8 seconds</option><option>10 seconds</option><option>15 seconds</option><option>30 seconds</option></select></div>
+    <div class="field"><label>Detail kualitas</label><select id="pQuality"><option>Ultra-detailed, 4K target</option><option>Full HD target</option><option>High-detail 2K target</option></select></div>
+   </div>
+   <div class="field"><label>Negative prompt</label><input id="pNegative" value="blurry, flicker, distorted anatomy, inconsistent face, extra fingers, artifacts, watermark, text overlay"></div>
+   <div class="actions">
+    <button class="btn" id="generatePrompt">✧ Generate Prompt</button>
+    <button class="btn secondary" id="clearPrompt">Reset</button>
+   </div>
+  </div>
+  <div class="card">
+   <div class="stat"><b>Generated prompt</b><span class="tag" id="promptEngineBadge">Template Lokal</span></div>
+   <p class="muted" style="font-size:12px">Dapat diedit langsung sebelum disalin atau dikirim ke Image/Video Studio.</p>
+   <div class="output" id="promptOutput" contenteditable="true">Prompt Anda akan muncul di sini setelah menekan Generate Prompt.</div>
+   <div class="actions">
+    <button class="btn" id="copyPrompt">Salin Prompt</button>
+    <button class="btn secondary" id="savePrompt">Simpan Proyek</button>
+    <button class="btn ghost" id="sendToVideo">Kirim ke Video Studio →</button>
+   </div>
+  </div>
+ </div>
+</section>
+
+<!-- 3. CHARACTER STUDIO -->
+<section class="page" id="character">
+ <div class="eyebrow">IDENTITY DESIGN</div>
+ <h1 class="heading">Character Studio</h1>
+ <p class="sub">Buat lembar identitas karakter dan unggah reference image untuk menjaga konsistensi antaradegan.</p>
+ <div class="two">
+  <div class="card">
+   <div class="field"><label>Nama karakter</label><input id="cName" placeholder="Nama karakter"></div>
+   <div class="row">
+    <div class="field"><label>Usia visual</label><input id="cAge" placeholder="Contoh: 28 tahun"></div>
+    <div class="field"><label>Gender / presentasi</label><select id="cGender"><option>Pria</option><option>Wanita</option><option>Androgini</option><option>Karakter non-manusia</option></select></div>
+   </div>
+   <div class="field"><label>Reference Image (Opsional — JPG/PNG/WebP)</label><input type="file" id="cRefFile" accept="image/*"></div>
+   <div class="field"><label>Deskripsi wajah dan ciri khas</label><textarea id="cFace" placeholder="Bentuk wajah, mata, hidung, tanda khusus..."></textarea></div>
+   <div class="field"><label>Rambut, pakaian, dan aksesori</label><textarea id="cOutfit" placeholder="Gaya rambut, warna pakaian, aksesori..."></textarea></div>
+   <div class="field"><label>Kepribadian dan suara</label><textarea id="cVoice" placeholder="Tenang, tegas, suara bariton, artikulasi jelas..."></textarea></div>
+   <button class="btn" id="saveCharacter">Simpan karakter</button>
+  </div>
+  <div class="card">
+   <b>Character library</b>
+   <p class="muted" style="font-size:12px">Profil & gambar referensi disimpan di browser perangkat ini dan otomatis muncul di Asset Library.</p>
+   <div id="characterList" class="list"><div class="empty">Belum ada karakter tersimpan.</div></div>
+   <div class="notice">Character Lock menyimpan deskripsi dan reference image lokal. Konsistensi visual penuh pada video akhir bergantung pada dukungan image-to-video di provider AI yang terhubung.</div>
+  </div>
+ </div>
+</section>
+
+<!-- 4. AI VOICE STUDIO -->
+<section class="page" id="voice">
+ <div class="eyebrow">AUDIO PRODUCTION</div>
+ <h1 class="heading">AI Voice Studio</h1>
+ <p class="sub">Siapkan naskah, gaya narasi, dan arahan suara untuk proses text-to-speech.</p>
+ <div class="two">
+  <div class="card">
+   <div class="field"><label>Naskah suara</label><textarea id="voiceText" placeholder="Tuliskan dialog atau narasi..."></textarea></div>
+   <div class="row">
+    <div class="field"><label>Jenis suara</label><select id="voiceType"><option>Narator pria</option><option>Narator wanita</option><option>Dokumenter</option><option>Karakter dramatis</option></select></div>
+    <div class="field"><label>Emosi</label><select id="voiceMood"><option>Tenang</option><option>Bersemangat</option><option>Dramatis</option><option>Serius</option><option>Bahagia</option><option>Sedih</option></select></div>
+   </div>
+   <div class="row">
+    <div class="field"><label>Kecepatan</label><select id="voiceSpeed"><option>Normal</option><option>Pelan</option><option>Cepat</option></select></div>
+    <div class="field"><label>Bahasa</label><select id="voiceLang"><option>Bahasa Indonesia</option><option>English</option></select></div>
+   </div>
+   <button class="btn" id="voiceBrief">Buat arahan voice AI</button>
+  </div>
+  <div class="card">
+   <b>Voice production brief</b>
+   <p class="muted" style="font-size:12px">Arahan siap dipindahkan ke provider text-to-speech.</p>
+   <div id="voiceOutput" class="output">Arahan suara akan muncul di sini.</div>
+   <div class="actions">
+    <button class="btn secondary" id="copyVoice">Salin arahan</button>
+    <button class="btn ghost" id="addVoiceToTimeline">+ Masukkan ke Timeline</button>
+   </div>
+   <div class="notice">Pembuatan file suara nyata (MP3/WAV) membutuhkan koneksi backend ke provider TTS. Modul ini menyusun brief produksi suara.</div>
+  </div>
+ </div>
+</section>
+
+<!-- 5. AI IMAGE STUDIO -->
+<section class="page" id="image">
+ <div class="eyebrow">VISUAL GENERATION</div>
+ <h1 class="heading">AI Image Studio</h1>
+ <p class="sub">Susun prompt gambar dan arahan visual untuk generator gambar eksternal.</p>
+ <div class="card">
+  <div class="field"><label>Deskripsi gambar</label><textarea id="imageIdea" placeholder="Jelaskan subjek, lokasi, suasana, detail visual..."></textarea></div>
+  <div class="row">
+   <div class="field"><label>Gaya</label><select id="imageStyle"><option>Photorealistic cinematic</option><option>Studio product photography</option><option>Digital illustration</option><option>3D render</option><option>Anime</option></select></div>
+   <div class="field"><label>Rasio</label><select id="imageRatio"><option>16:9</option><option>9:16</option><option>1:1</option><option>4:5</option></select></div>
+  </div>
+  <button class="btn" id="imageBrief">Buat prompt gambar</button>
+  <div class="field"><label>Hasil prompt</label><div class="output" id="imageOutput">Prompt gambar akan tampil di sini.</div></div>
+  <button class="btn secondary" id="copyImage">Salin prompt</button>
+  <div class="notice">Rendering gambar langsung memerlukan koneksi backend ke provider Image Generation (seperti Imagen 3).</div>
+ </div>
+</section>
+
+<!-- 6. AI VIDEO STUDIO -->
+<section class="page" id="video">
+ <div class="eyebrow">VIDEO PRODUCTION</div>
+ <h1 class="heading">AI Video Studio</h1>
+ <p class="sub">Siapkan spesifikasi produksi video sebelum dikirim ke model video AI.</p>
+ <div class="card">
+  <div class="field"><label>Konsep video</label><textarea id="videoIdea" placeholder="Jelaskan video yang ingin dibuat..."></textarea></div>
+  <div class="row">
+   <div class="field"><label>Model / provider</label><select><option>Belum terhubung — pilih di API Settings</option><option>Google Veo (jika akses tersedia)</option><option>Provider video lainnya</option></select></div>
+   <div class="field"><label>Resolusi target</label><select id="videoRes"><option>1080p</option><option>4K (jika didukung provider)</option><option>720p</option></select></div>
+  </div>
+  <div class="row">
+   <div class="field"><label>Durasi</label><select id="videoDuration"><option>8 detik</option><option>5 detik</option><option>10 detik</option><option>15 detik</option></select></div>
+   <div class="field"><label>Frame rate target</label><select id="videoFps"><option>24 FPS</option><option>30 FPS</option><option>60 FPS (jika didukung)</option></select></div>
+  </div>
+  <button class="btn" id="videoBrief">Buat production brief</button>
+  <div class="field"><label>Production brief</label><div class="output" id="videoOutput">Brief video akan muncul di sini.</div></div>
+  <div class="notice">Tombol ini menyiapkan brief produksi, bukan merender file video MP4. Rendering membutuhkan backend dan API provider video yang aktif.</div>
+ </div>
+</section>
+
+<!-- 7. STORYBOARD STUDIO -->
+<section class="page" id="storyboard">
+ <div class="eyebrow">PRE-PRODUCTION</div>
+ <h1 class="heading">Storyboard Studio</h1>
+ <p class="sub">Pecah cerita menjadi adegan terstruktur dan kirim langsung ke timeline Video Editor.</p>
+ <div class="card">
+  <div class="field"><label>Judul cerita</label><input id="storyTitle" placeholder="Judul proyek"></div>
+  <div class="field"><label>Ringkasan cerita</label><textarea id="storyIdea" placeholder="Tuliskan alur cerita dari awal hingga akhir..."></textarea></div>
+  <div class="row">
+   <div class="field"><label>Jumlah adegan</label><select id="storyScenes"><option>3</option><option>4</option><option>5</option><option>6</option></select></div>
+   <div class="field"><label>Genre</label><select id="storyGenre"><option>Drama sinematik</option><option>Action</option><option>Dokumenter</option><option>Komedi</option><option>Fantasi</option><option>Iklan komersial</option></select></div>
+  </div>
+  <div class="actions">
+   <button class="btn" id="makeStoryboard">Buat kerangka storyboard</button>
+   <button class="btn secondary" id="sendStoryToEditor" style="display:none">Kirim Semua Adegan ke Video Editor →</button>
+  </div>
+  <div id="storyOutput" class="list" style="margin-top:16px"></div>
+ </div>
+</section>
+
+<!-- 8. VIDEO EDITOR -->
+<section class="page" id="editor">
+ <div class="eyebrow">POST PRODUCTION</div>
+ <h1 class="heading">Video Editor</h1>
+ <p class="sub">Susun urutan adegan storyboard, trek suara, dan ekspor manifest produksi Anda.</p>
+ <div class="card">
+  <div class="preview-box" id="editorPreview">
+   <div class="tag" id="previewBadge">STANDBY</div>
+   <h3 id="previewTitle" style="margin:8px 0 4px">Belum ada adegan di timeline</h3>
+   <p class="muted" id="previewDesc" style="max-width:520px;margin:0;font-size:12px">Buat kerangka di Storyboard Studio atau tambahkan klip manual di bawah untuk memulai simulasi susunan timeline.</p>
+  </div>
+  <div class="actions" style="justify-content:space-between;align-items:center">
+   <div style="display:flex;gap:8px;flex-wrap:wrap">
+    <button class="btn" id="playTimeline">▶ Simulasi Preview</button>
+    <button class="btn secondary" id="addManualClip">+ Tambah Klip Adegan</button>
+    <button class="btn ghost" id="clearTimeline">Bersihkan Timeline</button>
+   </div>
+   <button class="btn secondary" id="exportManifest">↓ Export Project Manifest (.json)</button>
+  </div>
+  <div class="timeline-wrap">
+   <div class="track">
+    <div class="track-label">🎬 VIDEO TRACK</div>
+    <div class="track-lane" id="videoLane"><span class="muted" style="font-size:12px;padding:6px">Kosong — kirim adegan dari Storyboard Studio</span></div>
+   </div>
+   <div class="track">
+    <div class="track-label">🎙 VOICE / AUDIO</div>
+    <div class="track-lane" id="audioLane"><span class="muted" style="font-size:12px;padding:6px">Kosong — tambahkan dari AI Voice Studio</span></div>
+   </div>
+  </div>
+  <div class="notice">Catatan: Timeline ini menyusun struktur adegan, durasi, dan ekspor file manifest JSON. Rendering video MP4 final membutuhkan server backend dengan FFmpeg.</div>
+ </div>
+</section>
+
+<!-- 9. MUSIC & SOUND FX -->
+<section class="page" id="audio">
+ <div class="eyebrow">SOUND DESIGN</div>
+ <h1 class="heading">Music & Sound FX</h1>
+ <p class="sub">Rancang kebutuhan musik dan efek suara untuk proyek.</p>
+ <div class="card">
+  <div class="field"><label>Deskripsi audio</label><textarea id="audioIdea" placeholder="Contoh: musik sinematik tegang dengan perkusi dan string..."></textarea></div>
+  <div class="field"><label>Jenis audio</label><select id="audioType"><option>Background music</option><option>Ambient sound</option><option>Sound effect</option><option>Transition sound</option></select></div>
+  <button class="btn" id="audioBrief">Buat audio brief</button>
+  <div class="output" id="audioOutput" style="margin-top:14px">Audio brief akan muncul di sini.</div>
+  <div class="notice">Pembuatan file musik atau efek suara membutuhkan koneksi layanan audio AI eksternal.</div>
+ </div>
+</section>
+
+<!-- 10. MY PROJECTS -->
+<section class="page" id="projects">
+ <div class="eyebrow">YOUR WORK</div>
+ <h1 class="heading">My Projects</h1>
+ <p class="sub">Prompt dan proyek yang disimpan dari studio ini.</p>
+ <div id="projectList" class="list"><div class="empty">Belum ada proyek.</div></div>
+</section>
+
+<!-- 11. ASSET LIBRARY -->
+<section class="page" id="assets">
+ <div class="eyebrow">MEDIA LIBRARY</div>
+ <h1 class="heading">Asset Library</h1>
+ <p class="sub">Referensi visual karakter dan aset lokal tersimpan di perangkat ini.</p>
+ <div class="card">
+  <div id="assetContainer"><div class="empty">Belum ada aset gambar referensi. Unggah foto referensi di Character Studio untuk menampilkannya di sini.</div></div>
+ </div>
+</section>
+
+<!-- 12. API SETTINGS -->
+<section class="page" id="settings">
+ <div class="eyebrow">CONNECTIONS</div>
+ <h1 class="heading">API Settings</h1>
+ <p class="sub">Status koneksi layanan AI. Demi keamanan, jangan pernah menanamkan API key rahasia langsung di file HTML.</p>
+ <div class="card">
+  <h3>Provider status</h3>
+  <div class="list">
+   <div class="item"><div><b>Google Gemini API</b><small>Untuk AI Prompt Generator & Storyboard otomatis</small></div><span class="status" id="stGemini">Belum terhubung</span></div>
+   <div class="item"><div><b>Video generation API (Google Veo)</b><small>Untuk rendering video AI</small></div><span class="status" id="stVeo">Belum terhubung</span></div>
+   <div class="item"><div><b>Image generation API</b><small>Untuk gambar AI</small></div><span class="status" id="stImage">Belum terhubung</span></div>
+   <div class="item"><div><b>Text-to-speech API</b><small>Untuk pembuatan suara</small></div><span class="status" id="stTts">Belum terhubung</span></div>
+   <div class="item"><div><b>Supabase</b><small>Database, autentikasi, dan cloud storage</small></div><span class="status" id="stSupabase">Belum terhubung</span></div>
+  </div>
+  <div class="field" style="margin-top:18px">
+   <label>Endpoint Backend Server (Opsional)</label>
+   <div style="display:flex;gap:8px">
+    <input id="backendUrlInput" placeholder="http://localhost:3000" value="">
+    <button class="btn secondary" id="testBackendBtn">Cek Koneksi</button>
+   </div>
+  </div>
+  <div class="notice">Aplikasi berjalan penuh dalam mode lokal di browser. Untuk mengaktifkan generasi media nyata, jalankan server backend Node.js dengan API key di file <code>.env</code>.</div>
+ </div>
+</section>
+
+<div class="footer-note">RENGGA STUDIO PRODUCTION • AI VIDEO STUDIO PRO • Data disimpan lokal di browser perangkat ini.</div>
+</div>
+</main>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const get = (k, d = []) => { try { return JSON.parse(localStorage.getItem(k) || JSON.stringify(d)); } catch { return d; } };
+const put = (k, v) => localStorage.setItem(k, JSON.stringify(v));
+
+let backendBase = localStorage.getItem('avsp_backend_url') || '';
+let serverStatus = { gemini: false };
+let lastGeneratedStoryboard = [];
+let timelineClips = get('avsp_timeline_video', []);
+let timelineAudio = get('avsp_timeline_audio', []);
+
+function esc(s) {
+  return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p.id === id));
+  document.querySelectorAll('.nav').forEach(n => n.classList.toggle('active', n.dataset.page === id));
+  $('crumb').textContent = document.querySelector('.nav[data-page="' + id + '"]')?.textContent.trim() || id;
+  $('sidebar').classList.remove('open');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (id === 'projects') renderProjects();
+  if (id === 'character') renderCharacters();
+  if (id === 'prompt') populateCharacterDropdown();
+  if (id === 'assets') renderAssets();
+  if (id === 'editor') renderTimeline();
+}
+
+document.querySelectorAll('.nav').forEach(n => n.addEventListener('click', () => showPage(n.dataset.page)));
+$('menuBtn').addEventListener('click', () => $('sidebar').classList.toggle('open'));
+
+function updateStats() {
+  $('projectCount').textContent = get('avsp_projects').length;
+  $('characterCount').textContent = get('avsp_chars').length;
+  $('promptCount').textContent = get('avsp_prompt_count', 0);
+  const p = get('avsp_projects');
+  $('recent').innerHTML = p.length
+    ? '<div class="list">' + p.slice(-3).reverse().map(x => `<div class="item"><div><b>${esc(x.title)}</b><small>${esc(x.type)} • ${new Date(x.date).toLocaleString('id-ID')}</small></div><span class="tag">Saved</span></div>`).join('') + '</div>'
+    : '<div class="empty">Belum ada aktivitas. Mulai dengan membuat prompt pertama Anda.</div>';
+}
+
+function saveProject(title, type, content) {
+  const p = get('avsp_projects');
+  p.push({ title, type, content, date: new Date().toISOString() });
+  put('avsp_projects', p);
+  updateStats();
+}
+
+function populateCharacterDropdown() {
+  const chars = get('avsp_chars');
+  const sel = $('pCharSelect');
+  sel.innerHTML = '<option value="">-- Tanpa karakter tersimpan --</option>' +
+    chars.map((c, idx) => `<option value="${idx}">${esc(c.name)} (${esc(c.gender)}${c.age ? ', ' + esc(c.age) : ''})</option>`).join('');
+}
+
+// Prompt Generator
+$('generatePrompt').onclick = async () => {
+  const idea = $('pIdea').value.trim();
+  if (!idea) { alert('Isi ide atau deskripsi adegan terlebih dahulu.'); return; }
+
+  const charIdx = $('pCharSelect').value;
+  let charRefText = '';
+  if (charIdx !== '') {
+    const c = get('avsp_chars')[Number(charIdx)];
+    if (c) {
+      charRefText = `${c.name} (${c.gender}${c.age ? ', ' + c.age : ''}) — Wajah: ${c.face || '-'}; Pakaian: ${c.outfit || '-'}`;
+    }
+  }
+
+  const payload = {
+    idea,
+    style: $('pStyle').value,
+    ratio: $('pRatio').value,
+    camera: $('pCamera').value,
+    light: $('pLight').value,
+    duration: $('pDuration').value,
+    quality: $('pQuality').value,
+    negative: $('pNegative').value,
+    characterRef: charRefText
+  };
+
+  if (serverStatus.gemini && backendBase) {
+    try {
+      $('generatePrompt').disabled = true;
+      $('generatePrompt').textContent = '⏳ Memproses...';
+      const res = await fetch(`${backendBase.replace(/\/$/, '')}/api/generate-prompt`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      if (res.ok && data.prompt) {
+        $('promptOutput').textContent = data.prompt;
+        $('promptEngineBadge').textContent = '✨ Gemini AI';
+        put('avsp_prompt_count', get('avsp_prompt_count', 0) + 1);
+        updateStats();
+        return;
+      }
+    } catch (e) {
+      console.warn('Fallback ke template lokal:', e);
+    } finally {
+      $('generatePrompt').disabled = false;
+      $('generatePrompt').textContent = '✧ Generate Prompt';
+    }
+  }
+
+  const out = `SUBJECT & ACTION:
+${idea}${charRefText ? `
+
+CHARACTER LOCK:
+${charRefText}` : ''}
+
+VISUAL STYLE:
+${payload.style}, cinematic composition, coherent visual storytelling.
+
+CAMERA:
+${payload.camera}, natural motion, stable framing, intentional composition.
+
+LIGHTING:
+${payload.light}, realistic shadows, balanced exposure, detailed highlights.
+
+TECHNICAL TARGET:
+${payload.quality}, ${payload.ratio} aspect ratio, target duration ${payload.duration}. Actual output depends on selected video model capabilities.
+
+MOTION & CONTINUITY:
+Smooth natural movement, consistent subject identity, realistic physics, temporal consistency, no abrupt unintended transitions.
+
+NEGATIVE PROMPT:
+${payload.negative}`;
+  $('promptOutput').textContent = out;
+  $('promptEngineBadge').textContent = 'Template Lokal';
+  put('avsp_prompt_count', get('avsp_prompt_count', 0) + 1);
+  updateStats();
+};
+
+$('clearPrompt').onclick = () => ['pIdea', 'pNegative'].forEach(id => $(id).value = '');
+$('copyPrompt').onclick = () => copyText($('promptOutput').textContent);
+$('savePrompt').onclick = () => {
+  const t = $('pIdea').value.trim();
+  if (!t || $('promptOutput').textContent.startsWith('Prompt Anda')) return alert('Buat prompt terlebih dahulu.');
+  saveProject(t.slice(0, 45), 'Video prompt', $('promptOutput').textContent);
+  alert('Prompt disimpan di My Projects.');
+};
+$('sendToVideo').onclick = () => {
+  const txt = $('promptOutput').textContent;
+  if (!txt || txt.startsWith('Prompt Anda')) return alert('Buat prompt terlebih dahulu.');
+  $('videoIdea').value = txt;
+  showPage('video');
+};
+
+function copyText(t) {
+  if (!t || t.includes('akan muncul')) return alert('Belum ada hasil untuk disalin.');
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(t).then(() => alert('Berhasil disalin.')).catch(() => fallbackCopy(t));
+  } else fallbackCopy(t);
+}
+function fallbackCopy(t) {
+  const a = document.createElement('textarea');
+  a.value = t;
+  document.body.appendChild(a);
+  a.select();
+  try { document.execCommand('copy'); alert('Berhasil disalin.'); } catch { alert('Tidak dapat menyalin otomatis. Silakan pilih dan salin teks.'); }
+  a.remove();
+}
+
+// Character Studio + Reference Image
+$('saveCharacter').onclick = () => {
+  const name = $('cName').value.trim();
+  if (!name) return alert('Masukkan nama karakter.');
+  const fileInput = $('cRefFile');
+  const saveCharObj = (refDataUrl) => {
+    const a = get('avsp_chars');
+    a.push({
+      name,
+      age: $('cAge').value,
+      gender: $('cGender').value,
+      face: $('cFace').value,
+      outfit: $('cOutfit').value,
+      voice: $('cVoice').value,
+      refImage: refDataUrl || ''
+    });
+    put('avsp_chars', a);
+    ['cName', 'cAge', 'cFace', 'cOutfit', 'cVoice'].forEach(id => $(id).value = '');
+    fileInput.value = '';
+    renderCharacters();
+    populateCharacterDropdown();
+    updateStats();
+    alert('Karakter berhasil disimpan di perangkat ini.');
+  };
+
+  if (fileInput.files && fileInput.files[0]) {
+    const reader = new FileReader();
+    reader.onload = e => saveCharObj(e.target.result);
+    reader.readAsDataURL(fileInput.files[0]);
+  } else {
+    saveCharObj('');
+  }
+};
+
+function renderCharacters() {
+  const a = get('avsp_chars');
+  $('characterList').innerHTML = a.length
+    ? a.map((c, i) => `
+      <div class="item">
+        <div style="display:flex;gap:12px;align-items:center">
+          ${c.refImage ? `<img src="${c.refImage}" class="char-thumb" alt="${esc(c.name)}">` : ''}
+          <div>
+            <b>${esc(c.name)}</b>
+            <small>${esc(c.age)} • ${esc(c.gender)}</small>
+            <small>${esc(c.face)}</small>
+          </div>
+        </div>
+        <button class="btn ghost" onclick="deleteCharacter(${i})">Hapus</button>
+      </div>`).join('')
+    : '<div class="empty">Belum ada karakter tersimpan.</div>';
+}
+
+function deleteCharacter(i) {
+  const a = get('avsp_chars');
+  a.splice(i, 1);
+  put('avsp_chars', a);
+  renderCharacters();
+  populateCharacterDropdown();
+  updateStats();
+}
+
+function renderAssets() {
+  const chars = get('avsp_chars').filter(c => c.refImage);
+  if (!chars.length) {
+    $('assetContainer').innerHTML = '<div class="empty">Belum ada aset gambar referensi. Unggah foto referensi di Character Studio untuk menampilkannya di sini.</div>';
+    return;
+  }
+  $('assetContainer').innerHTML = '<div class="asset-grid">' + chars.map(c => `
+    <div class="asset-card">
+      <img src="${c.refImage}" alt="${esc(c.name)}">
+      <div class="meta">
+        <b>${esc(c.name)}</b>
+        <small class="muted" style="display:block">Character Reference</small>
+      </div>
+    </div>`).join('') + '</div>';
+}
+
+// Voice, Image, Video, Audio Briefs
+$('voiceBrief').onclick = () => {
+  const t = $('voiceText').value.trim();
+  if (!t) return alert('Masukkan naskah terlebih dahulu.');
+  $('voiceOutput').textContent = `VOICE PRODUCTION BRIEF
+Language: ${$('voiceLang').value}
+Voice: ${$('voiceType').value}
+Emotion: ${$('voiceMood').value}
+Pacing: ${$('voiceSpeed').value}
+
+SCRIPT:
+${t}
+
+Direction: Clear articulation, natural breathing, controlled pauses, consistent vocal identity, studio-quality clean recording.`;
+};
+$('copyVoice').onclick = () => copyText($('voiceOutput').textContent);
+$('addVoiceToTimeline').onclick = () => {
+  const t = $('voiceText').value.trim();
+  if (!t) return alert('Masukkan naskah terlebih dahulu.');
+  timelineAudio.push({ title: `Voice (${$('voiceType').value})`, text: t.slice(0, 60) });
+  put('avsp_timeline_audio', timelineAudio);
+  alert('Naskah suara ditambahkan ke trek audio Video Editor.');
+};
+
+$('imageBrief').onclick = () => {
+  const t = $('imageIdea').value.trim();
+  if (!t) return alert('Masukkan deskripsi gambar.');
+  $('imageOutput').textContent = `${t}
+
+Style: ${$('imageStyle').value}
+Composition: professional composition, clear subject hierarchy, refined lighting, realistic material details, balanced color grading.
+Aspect ratio: ${$('imageRatio').value}
+Quality target: high detail, clean image, coherent anatomy, no unwanted text or watermark.`;
+};
+$('copyImage').onclick = () => copyText($('imageOutput').textContent);
+
+$('videoBrief').onclick = () => {
+  const t = $('videoIdea').value.trim();
+  if (!t) return alert('Masukkan konsep video.');
+  $('videoOutput').textContent = `VIDEO GENERATION BRIEF
+Concept: ${t}
+Resolution target: ${$('videoRes').value}
+Duration: ${$('videoDuration').value}
+Frame rate target: ${$('videoFps').value}
+Continuity: preserve character identity, scene geography, wardrobe, lighting logic and temporal motion.
+Note: output settings are targets and must be supported by the connected provider.`;
+};
+
+// Storyboard Studio
+$('makeStoryboard').onclick = () => {
+  const title = $('storyTitle').value.trim();
+  const idea = $('storyIdea').value.trim();
+  const n = Number($('storyScenes').value);
+  const genre = $('storyGenre').value;
+  if (!idea) return alert('Masukkan ringkasan cerita.');
+
+  const acts = ['Opening / Establishing', 'Introduction', 'Development', 'Key moment', 'Climax', 'Resolution'];
+  lastGeneratedStoryboard = Array.from({ length: n }, (_, i) => ({
+    sceneNumber: i + 1,
+    actTitle: acts[i % acts.length],
+    description: idea,
+    genre,
+    duration: '5s'
+  }));
+
+  $('storyOutput').innerHTML = lastGeneratedStoryboard.map(s => `
+    <div class="item">
+      <div>
+        <b>Scene ${String(s.sceneNumber).padStart(2, '0')} — ${esc(s.actTitle)}</b>
+        <small>${esc(s.description)}</small>
+        <small>Genre: ${esc(s.genre)} • Estimasi durasi: ${s.duration}</small>
+      </div>
+      <span class="tag">${s.sceneNumber}/${n}</span>
+    </div>`).join('');
+
+  $('sendStoryToEditor').style.display = 'inline-block';
+  saveProject(title || 'Storyboard baru', 'Storyboard', idea);
+};
+
+$('sendStoryToEditor').onclick = () => {
+  if (!lastGeneratedStoryboard.length) return;
+  timelineClips = lastGeneratedStoryboard.map(s => ({
+    title: `Scene ${String(s.sceneNumber).padStart(2, '0')}: ${s.actTitle}`,
+    desc: s.description,
+    duration: s.duration
+  }));
+  put('avsp_timeline_video', timelineClips);
+  showPage('editor');
+};
+
+// Video Editor Timeline
+function renderTimeline() {
+  $('videoLane').innerHTML = timelineClips.length
+    ? timelineClips.map((c, i) => `<div class="clip" onclick="previewClip(${i})">🎬 ${esc(c.title)} (${esc(c.duration)})</div>`).join('')
+    : '<span class="muted" style="font-size:12px;padding:6px">Kosong — kirim adegan dari Storyboard Studio</span>';
+
+  $('audioLane').innerHTML = timelineAudio.length
+    ? timelineAudio.map(a => `<div class="clip audio">🎙 ${esc(a.title)}: ${esc(a.text)}</div>`).join('')
+    : '<span class="muted" style="font-size:12px;padding:6px">Kosong — tambahkan dari AI Voice Studio</span>';
+
+  if (timelineClips.length) previewClip(0);
+}
+
+function previewClip(idx) {
+  const c = timelineClips[idx];
+  if (!c) return;
+  $('previewBadge').textContent = `CLIP ${idx + 1} / ${timelineClips.length} • ${c.duration}`;
+  $('previewTitle').textContent = c.title;
+  $('previewDesc').textContent = c.desc;
+}
+
+$('addManualClip').onclick = () => {
+  const name = prompt('Judul klip adegan:', `Scene ${String(timelineClips.length + 1).padStart(2, '0')}`);
+  if (!name) return;
+  const desc = prompt('Deskripsi singkat adegan:', 'Shot sinematik medium close-up') || '';
+  timelineClips.push({ title: name, desc, duration: '5s' });
+  put('avsp_timeline_video', timelineClips);
+  renderTimeline();
+};
+
+$('clearTimeline').onclick = () => {
+  timelineClips = [];
+  timelineAudio = [];
+  put('avsp_timeline_video', []);
+  put('avsp_timeline_audio', []);
+  $('previewBadge').textContent = 'STANDBY';
+  $('previewTitle').textContent = 'Belum ada adegan di timeline';
+  $('previewDesc').textContent = 'Buat kerangka di Storyboard Studio atau tambahkan klip manual di bawah untuk memulai simulasi susunan timeline.';
+  renderTimeline();
+};
+
+$('playTimeline').onclick = () => {
+  if (!timelineClips.length) return alert('Tambahkan minimal 1 adegan ke timeline terlebih dahulu.');
+  let idx = 0;
+  previewClip(0);
+  const timer = setInterval(() => {
+    idx++;
+    if (idx >= timelineClips.length) {
+      clearInterval(timer);
+      $('previewBadge').textContent = 'PREVIEW SELESAI';
+    } else {
+      previewClip(idx);
+    }
+  }, 1500);
+};
+
+$('exportManifest').onclick = () => {
+  const manifest = {
+    studio: 'RENGGA STUDIO PRODUCTION',
+    exportedAt: new Date().toISOString(),
+    projects: get('avsp_projects'),
+    characters: get('avsp_chars').map(c => ({ ...c, refImage: c.refImage ? '[embedded-base64]' : '' })),
+    timeline: { videoTracks: timelineClips, audioTracks: timelineAudio }
+  };
+  const blob = new Blob([JSON.stringify(manifest, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `rengga-studio-manifest-${Date.now()}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+};
+
+$('audioBrief').onclick = () => {
+  const t = $('audioIdea').value.trim();
+  if (!t) return alert('Masukkan deskripsi audio.');
+  $('audioOutput').textContent = `AUDIO GENERATION BRIEF
+Type: ${$('audioType').value}
+Description: ${t}
+Direction: clean mix, suitable dynamics, no clipping, match the pacing and emotional tone of the video.`;
+};
+
+function renderProjects() {
+  const p = get('avsp_projects');
+  $('projectList').innerHTML = p.length
+    ? p.slice().reverse().map((x, i) => `<div class="item"><div><b>${esc(x.title)}</b><small>${esc(x.type)} • ${new Date(x.date).toLocaleString('id-ID')}</small><small>${esc(x.content.slice(0, 100))}</small></div><button class="btn ghost" onclick="deleteProject(${p.length - 1 - i})">Hapus</button></div>`).join('')
+    : '<div class="empty">Belum ada proyek tersimpan.</div>';
+}
+
+function deleteProject(i) {
+  const p = get('avsp_projects');
+  p.splice(i, 1);
+  put('avsp_projects', p);
+  renderProjects();
+  updateStats();
+}
+
+// API Settings Backend Check
+$('backendUrlInput').value = backendBase;
+$('testBackendBtn').onclick = async () => {
+  backendBase = $('backendUrlInput').value.trim();
+  localStorage.setItem('avsp_backend_url', backendBase);
+  if (!backendBase) {
+    alert('Masukkan URL backend server (contoh: http://localhost:3000)');
+    return;
+  }
+  try {
+    const res = await fetch(`${backendBase.replace(/\/$/, '')}/api/status`);
+    const data = await res.json();
+    serverStatus = data;
+    $('stGemini').textContent = data.gemini ? 'Terhubung' : 'Belum terhubung';
+    $('stGemini').className = data.gemini ? 'status connected' : 'status';
+    $('stSupabase').textContent = data.supabase ? 'Terhubung' : 'Belum terhubung';
+    $('stSupabase').className = data.supabase ? 'status connected' : 'status';
+    $('workspacePill').textContent = data.gemini ? '● Backend + Gemini Aktif' : '● Backend Terhubung';
+    if (data.gemini) $('workspacePill').classList.add('online');
+    alert('Status backend berhasil diperbarui.');
+  } catch {
+    alert('Tidak dapat terhubung ke server backend pada URL tersebut. Aplikasi tetap berjalan dalam mode lokal.');
+  }
+};
+
+updateStats();
+renderCharacters();
+populateCharacterDropdown();
+renderTimeline();
+</script>
+</body>
+</html>
