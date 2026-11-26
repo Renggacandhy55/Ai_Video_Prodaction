@@ -1,13 +1,13 @@
 {
-  "background_color": "#ffffff",
+  "background_color": "#090B13",
   "dir": "ltr",
   "display": "standalone",
   "name": "AI VIDEO STUDIO PRO",
   "orientation": "any",
-  "scope": "/",
+  "scope": "/Ai_Video_Prodaction/",
   "short_name": "AI VIDEO PRO",
-  "start_url": "/",
-  "theme_color": "rgb(163, 34, 218)",
+  "start_url": "/Ai_Video_Prodaction/",
+  "theme_color": "#090B13",
   "description": "Studio produksi video AI untuk membuat prompt, karakter, suara, dan storyboard.",
   "id": "Ai-video-pro"
 }
